@@ -1,0 +1,124 @@
+{
+  "login.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "css/login.css",
+      "image/login_bac.png"
+    ],
+    "refer": [
+      "index.html"
+    ]
+  },
+  "index.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "css/index.css",
+      "image/index_bac.jpg",
+      "image/index_border.png"
+    ],
+    "refer": [
+      "wateDetail.html",
+      "waterDetail.html"
+    ]
+  },
+  "line-aqi.html": {
+    "resources": [
+      "js/jquery.min.js",
+      "sj.json",
+      "js/china.js",
+      "js/echarts.min.js",
+      "js/world.js",
+      "js/dataTool.min.js",
+      "js/echarts-gl.min.js",
+      "js/bmap.min.js",
+      "js/simplex.js",
+      "js/ecStat.min.js",
+      "js/api",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "mui.html": {
+    "resources": [
+      "js/china.js",
+      "js/jquery.min.js",
+      "js/dataTool.min.js",
+      "js/echarts-gl.min.js",
+      "js/simplex.js",
+      "js/api",
+      "js/echarts.min.js",
+      "js/world.js",
+      "js/mui.min.js",
+      "js/bmap.min.js",
+      "sj.json",
+      "css/mui.min.css",
+      "js/ecStat.min.js"
+    ],
+    "refer": []
+  },
+  "wateDetail.html": {
+    "resources": [
+      "css/index.css",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "image/index_bac.jpg",
+      "fonts/mui.ttf",
+      "css/waterDetail.css"
+    ],
+    "refer": [
+      "temperature.html"
+    ]
+  },
+  "temperature.html": {
+    "resources": [
+      "js/china.js",
+      "js/jquery.min.js",
+      "js/dataTool.min.js",
+      "js/echarts-gl.min.js",
+      "fonts/mui.ttf",
+      "js/simplex.js",
+      "image/echart_bac.jpg",
+      "js/api",
+      "js/echarts.min.js",
+      "js/world.js",
+      "js/mui.min.js",
+      "js/bmap.min.js",
+      "css/mui.min.css",
+      "css/temperature.css",
+      "js/ecStat.min.js"
+    ],
+    "refer": []
+  },
+  "waterDetail.html": {
+    "resources": [
+      "css/waterDetail.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "temperature.html",
+      "chart.html"
+    ]
+  },
+  "chart.html": {
+    "resources": [
+      "js/china.js",
+      "js/echarts.min.js",
+      "js/world.js",
+      "js/dataTool.min.js",
+      "js/jquery.min.js",
+      "js/echarts-gl.min.js",
+      "js/bmap.min.js",
+      "css/mui.min.css",
+      "js/simplex.js",
+      "image/echart_bac.jpg",
+      "js/api",
+      "js/ecStat.min.js",
+      "css/chart.css"
+    ]
+  }
+}

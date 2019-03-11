@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/login.css" />
+
+	</head>
+
+	<body>
+		<div id="nav">
+
+			<div class="mui-content1 mui-fullscreen">
+				<div class="login-a">
+					<!--<img src="image/logo.png" />-->
+					<div class="login_title">
+						水质监测管理系统
+					</div>
+				</div>
+				<div class="login-b" style="filter:alpha(Opacity=60);-moz-opacity:0.8;opacity: 0.8 ">
+					<div class="login-b-b">
+						<!--<div class="login-b-b-left">账号</div>-->
+						<div class="login-b-b-right">
+							<input type="text" placeholder="请输入管理员账号" />
+						</div>
+					</div>
+					<div class="login-b-b">
+						<!--<div class="login-b-b-left">密码</div>-->
+						<div class="login-b-b-right">
+							<input type="password" placeholder="请输入管理员密码" />0
+						</div>
+					</div>
+				</div>
+				<div class="btn">
+					<button id="btn">登录</button>
+
+				</div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script>
+			var username = localStorage.getItem('login_username');
+			console.log(username)
+            
+			if(window.innerHeight) {
+				var h = window.innerHeight;
+			} else if((document.body) && (document.body.clientHeight)) {
+				var h = document.body.clientHeight;
+			}
+			var nav = document.getElementById('nav');
+			nav.style.cssText = 'width: 100%;height:' + h + 'px;';
+
+			var btn = document.getElementById('btn');
+			var input = document.getElementsByTagName('input');
+			btn.addEventListener('tap', function() {
+
+				var username = input[0].value;
+				var password = input[1].value;
+
+				if(username == '') {
+					mui.toast('账号不能为空');
+				} else if(password == '') {
+					mui.toast('密码不能为空')
+				} else {
+					//请求数据库对比
+					mui.ajax('http://www.lx0575.com/userWater/login', {
+						data: {
+							userName: username,
+							password: password
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						success: function(data) {
+							console.log(data);
+							if(data.code == 200) {
+								mui.toast('登录成功');
+								localStorage.setItem('login_username', username);
+								mui.openWindow({
+									url:'index.html',
+									id:'index'
+								})
+							} else {
+								mui.toast('登录失败');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+						}
+					});
+				}
+
+			});
+		</script>
+				
+	</body>
+
+</html>

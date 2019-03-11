@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/waterDetail.css" />
+		<script src="js/mui.min.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title"></h1>
+		</header>
+		<div class="mui-content" id="nav">
+			<!--<div class="areaList">
+				<div class="area-name">温度</div>
+				<div class="area-main">
+					<div class="main-temperature">
+						<div class="temperature-text">09:00 ：</div>
+						<div class="temperature-num">15℃</div>
+					</div>
+				</div>
+			</div>
+			<div class="areaList">
+				<div class="area-name">PH值</div>
+				<div class="area-main">
+					<div class="main-phvalue">
+						<div class="phvalue-text">09:00 ：</div>
+						<div class="phvalue-num">7.8</div>
+					</div>
+				</div>
+			</div>
+			<div class="areaList">
+				<div class="area-name">溶解氧</div>
+				<div class="area-main">
+					<div class="main-oxygen">
+						<div class="oxygen-text">09:00 ：</div>
+						<div class="oxygen-num">9mg/L</div>
+					</div>
+					
+				</div>
+			</div>
+			<div class="areaList">
+				<div class="area-name">浊度</div>
+				<div class="area-main">
+					<div class="main-turbidity">
+						<div class="turbidity-text">09:00 ：</div>
+						<div class="turbidity-num">19JTU</div>
+					</div>
+					
+				</div>
+			</div>-->
+		</div>
+
+		<script type="text/javascript">
+			if(window.innerHeight) {
+				var h = window.innerHeight;
+			} else if((document.body) && (document.body.clientHeight)) {
+				var h = document.body.clientHeight;
+			}
+			var nav = document.getElementById('nav');
+			nav.style.cssText = 'width: 100%;height:' + h + 'px;';
+			mui.init();
+			
+			
+			var wurl = 'http://www.lx0575.com/water/getInforByWaters/1';
+			var nav = document.getElementById('nav');
+			var title = document.getElementsByClassName('mui-title');
+			//获取上个页面传过来的id值
+			mui.plusReady(function(){
+				var waterId = plus.webview.currentWebview().waterId;
+//				console.log(waterId);
+				var wurl = 'http://www.lx0575.com/water/getInforByWaters/' + waterId;
+//				console.log(wurl)
+				mui.ajax(wurl, {
+					data: {},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'GET', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						//'Content-Type': 'application/json'
+					},
+					success: function(data) {	
+//						var data = JSON.stringify(data);	
+						var items = data.listItems;
+						var use = items[0].items[0].use; //水域名称
+						
+						title[0].innerHTML = use + '详情';
+						console.log(items);
+						
+						for(var a in items){
+							var text = '';
+							text =  '<div class="areaList">'
+								+		'<div class="area-name">' + items[a].items[0].param + '</div>'
+								+		'<div class="area-main" data-id=' +items[a].items[0].id + ' data-paramId=' +items[a].items[0].paramId +  '>';
+							
+							for(var b in items[a].items){
+								var gmtCreate = items[a].items[b].gmtCreate;
+								var time = gmtCreate.substr(11,gmtCreate.length);
+//								console.log(time)
+								text += '<div class="main-context">'
+									 +		'<div class="context-text">' + time  +'：'+ items[a].items[b].paramValue + items[a].items[b].unit  +'</div>'
+									 +  '</div>';
+							}      
+							text +=		'</div>'
+								 +	'</div>';
+							nav.innerHTML += text;
+						}	
+						//跳转到温度
+						var temp = document.getElementsByClassName('area-main');
+						for(var i = 0 ; i < temp.length ; i ++){
+							temp[i].addEventListener('tap',function(e){
+//								console.log(e)
+								var id = e.path[2].attributes[1].value;
+								var paramId = e.path[2].attributes[2].value;
+								
+								console.log(paramId)
+								mui.openWindow({
+									url:'chart.html',
+									id:'chart',
+									extras:{
+										waterId:id,
+										paramId:paramId
+									}
+								})
+							})
+						}
+						
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+					}
+				});
+			})
+			
+			//获取详情
+//			function getDetail(){
+//				var wurl = 'http://www.lx0575.com/water/getInforByWaters/' + waterId;
+//				alert(wurl);
+//
+//			}
+			
+		</script>
+	</body>
+
+</html>

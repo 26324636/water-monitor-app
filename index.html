@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<script src="js/mui.min.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">挑战杯</h1>
+		</header>
+		<div class="mui-content" id="nav">
+
+		</div>
+
+		<script type="text/javascript">
+			
+			//获取手机屏幕高度
+			if(window.innerHeight) {
+				var h = window.innerHeight;
+			} else if((document.body) && (document.body.clientHeight)) {
+				var h = document.body.clientHeight;
+			}
+			var nav = document.getElementById('nav');
+			nav.style.cssText = 'width: 100%;height:' + h + 'px;';
+
+			//登录之后成功之后返回不到登录的页面
+			var first = null;
+			mui.back = function() {
+				mui.plusReady(function() {
+					//首页返回键处理
+					//处理逻辑：1秒内，连续两次按返回键，则退出应用；
+					if(!first) {
+						first = new Date().getTime();
+						mui.toast('再按一次退出应用');
+						setTimeout(function() {
+							first = null;
+						}, 1000);
+					} else {
+						if(new Date().getTime() - first < 1000) {
+							plus.runtime.quit();
+						}
+					}
+				});
+			}
+
+			//获取多个水域的最近一次数据
+			mui.ajax('http://www.lx0575.com/water/getInfor', {
+				data: {},
+				dataType: 'json', //服务器返回json格式数据
+				type: 'GET', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				headers: {
+					//							'Content-Type': 'application/json'
+				},
+				success: function(data) {
+					var content = data.list;
+					nav.innerHTML = '';
+
+					for(var a in content) {
+						if(content[a].list == "" || content[a].list.length == 0 || content[a].list == null){
+							continue;
+						}
+						var text = '<div class="areaList">' +
+							'<div class="area-name">' + content[a].list[0].use + '</div>' +
+							'<div class="area-main" data-id=' + content[a].list[0].id + '>';
+						//						nav.innerHTML += text;
+						//						console.log(nav.innerHTML);
+						for(var b in content[a].list) {
+							//							console.log(content[a].list[b])
+							text += '<div class="main-content">' +
+								'<div class="content-text">' + content[a].list[b].param + '：' + '</div>' +
+								'<div class="content-num">' + content[a].list[b].paramValue + content[a].list[b].unit + '</div>' +
+								'</div>';
+						}
+						text += '</div>' +
+							'</div>';
+						nav.innerHTML += text;
+					}
+
+					//跳转水域
+					var area = document.getElementsByClassName('areaList');
+					console.log(area)
+					for(i = 0; i < area.length; i++) {
+						area[i].addEventListener('tap', function(e) {
+							console.log(e.path[2].attributes[1].value);
+							mui.openWindow({
+								url: 'waterDetail.html', //需要打开页面的url地址 
+								id: 'waterDetail', //需要打开页面的url页面id		
+								extras:{
+									waterId:e.path[2].attributes[1].value
+									
+								}
+							});
+						})
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					console.log(type);
+				}
+			});
+
+			//			area[0].onclick = function(){
+			//				console.log(111)
+			//			}
+			//			area[0].addEventListener('tap', function() {
+			//				alert(1111)
+			//				mui.openWindow({
+			//					url: 'wateDetail.html',
+			//					id: 'wateDetail'
+			//				})
+			//			})
+			//			for(var i = 0; i < area.length; i++) {
+			//				area[i].addEventListener('tap', function() {
+			//					alert(i)
+			//					mui.openWindow({
+			//						url: 'wateDetail.html',
+			//						id: 'wateDetail'
+			//					})
+			//				})
+			//			}
+		</script>
+	</body>
+
+</html>

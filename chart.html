@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/chart.css"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title"></h1>
+		</header>
+		<div id="container" ></div><br />
+		<div class="canshu">
+			
+		
+		<div class="upperLimit">
+			<div class="upperLimit-text">上限：</div>
+			<div class="upperLimit-num"></div>
+		</div>
+		<div class="lowerLimit">
+			<div class="lowerLimit-text">下限：</div>
+			<div class="lowerLimit-num"></div>
+		</div>
+		<div class="current">
+			<div class="current-text">当前：</div>
+			<div class="current-num"></div>
+		</div>
+		</div>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/echarts.min.js"></script>
+		<script type="text/javascript" src="js/echarts-gl.min.js"></script>
+		<script type="text/javascript" src="js/ecStat.min.js"></script>
+		<script type="text/javascript" src="js/dataTool.min.js"></script>
+		<script type="text/javascript" src="js/china.js"></script>
+		<script type="text/javascript" src="js/world.js"></script>
+		<script type="text/javascript" src="js/api"></script>
+		<script type="text/javascript" src="js/bmap.min.js"></script>
+		<script type="text/javascript" src="js/simplex.js"></script>
+		<script type="text/javascript">
+			
+			mui.plusReady(function(){
+				var waterId = plus.webview.currentWebview().waterId;
+				var paramId = plus.webview.currentWebview().paramId;
+				getInfo(waterId,paramId);
+                
+			})
+//		    getInfo(2,2);
+		    function getInfo(waterId,paramId){
+		    	var wurl = 'http://www.lx0575.com/water/getInforByParam	';
+		    	var title = document.getElementsByClassName('mui-title');
+		    	var upperLimit = document.getElementsByClassName('upperLimit-num');
+		    	var lowerLimit = document.getElementsByClassName('lowerLimit-num');
+		    	var current = document.getElementsByClassName('current-num');
+//				console.log(title[0].innerHTML)
+				mui.ajax(wurl, {
+					data: {
+						watersId:waterId,
+						pasramId:paramId
+					},
+					dataType: 'json', //服务器返回json格式数据
+					type: 'GET', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						//'Content-Type': 'application/json'
+					},
+					success: function(data) {		
+						var items = data.items;
+						console.log(items)
+						var use = items[0].use; //水域名称
+						var seriesName = items[0].param; //坐标上的名称
+						var alarmMax = items[0].alarmMax; //报警最高值
+						var alarmMin = items[0].alarmMin; //报警最小值
+						var scopeMin = items[0].scopeMin; //纵坐标最小值
+						var scopeMax = items[0].scopeMax; //纵坐标最大值
+						var paramId = items[0].paramId; //参数id（温度：1，PH值：2，溶解氧：3，浊度：4）
+						var value = items[0].paramValue; //数值
+						var curvePoints = items[0].curvePoints; //一页显示多少个点
+						var unit =  items[0].unit; //单位
+						
+						title[0].innerHTML = use + seriesName + '详情';
+						upperLimit[0].innerHTML = alarmMax + unit;
+						lowerLimit[0].innerHTML = alarmMin + unit;
+						current[0].innerHTML = items[items.length - 1].paramValue + unit;
+						
+						//横坐标数据处理（时间）
+						var xAxisData = [];
+						for(var i = 0 ; i < items.length ; i ++){
+							var gmtCreate = items[i].gmtCreate;
+							var time = gmtCreate.substr(0,16);
+							xAxisData.push(time)
+						}
+						
+						//纵坐标数据处理
+						var yAxisData = [];
+						if(paramId == 1){
+							for(var i = 0 ; i <= 45 ; i += 5){
+								var obj = {};
+								obj.yAxis = i;
+								yAxisData.push(obj);
+							}
+						}else if(paramId == 2){
+							for(var i = 0 ; i <= 14 ; i ++){
+								var obj = {};
+								obj.yAxis = i;
+								yAxisData.push(obj);
+							}
+						}else if(paramId == 3){
+							for(var i = 0 ; i <= 20 ; i += 2){
+								var obj = {};
+								obj.yAxis = i;
+								yAxisData.push(obj);
+							}
+						}else if(paramId == 4){
+							for(var i = 0 ; i <= 4000 ; i += 400){
+								var obj = {};
+								obj.yAxis = i;
+								yAxisData.push(obj);
+							}
+						}
+						
+						
+						//具体数值处理
+						var paramValue = [];
+						for(var i =  0; i < items.length ; i ++){
+							paramValue.push(items[i].paramValue);
+						}
+						
+						//报警颜色处理
+						var pieces = [];
+						var color = {};
+						color.gt = scopeMin;
+						color.lte = alarmMin;
+						color.color = 'red';
+						pieces.push(color);
+						
+						var color = {};
+						color.gt = alarmMin;
+						color.lte = alarmMax;
+						color.color = 'green';
+						pieces.push(color);
+						
+						var color = {};
+						color.gt = alarmMax;
+						color.lte = scopeMax;
+						color.color = 'red';
+						pieces.push(color);
+						
+						//一页显示多少点
+						console.log(xAxisData.length)
+						if(curvePoints >= xAxisData.length){
+							startValue = xAxisData[0];
+						}else{
+							startValue = xAxisData[xAxisData.length - curvePoints];
+						}
+						console.log(startValue)
+						
+						var info = {};
+						info.seriesName = seriesName;
+						info.xAxisData = xAxisData;
+						info.yAxisData = yAxisData;
+						info.paramValue = paramValue;
+						info.pieces = pieces;
+						info.startValue = startValue;
+						
+						draw(info);
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+					},
+					complete:function(){
+					}
+				});
+		    }
+			
+			
+			function draw(info){
+				var dom = document.getElementById("container");
+				var myChart = echarts.init(dom);
+				var app = {};
+				option = null;
+				myChart.setOption(option = {
+					title: {
+						text: ''
+					},
+					tooltip: {
+						trigger: 'axis'
+					},
+					xAxis: {
+						data: info.xAxisData
+					},
+					yAxis: {
+						splitLine: {
+							show: false
+						}
+					},
+					toolbox: {
+						left: 'center',
+						feature: {
+							dataZoom: {
+								yAxisIndex: 'none'
+							},
+							restore: {},
+							saveAsImage: {}
+						}
+					},
+					dataZoom: [{
+						startValue: info.startValue
+					}, {
+						type: 'inside'
+					}],
+					visualMap: {
+						top: 10,
+						right: 10,
+						pieces: info.pieces,
+						outOfRange: {
+							color: '#999'
+						}
+					},
+					series: {
+						name: info.seriesName,
+						type: 'line',
+						//						data: data.map(function(item) {
+						//							return item[1];
+						//						}),
+						data:info.paramValue,
+						markLine: {
+							silent: true,
+							data:info.yAxisData
+						}
+					}
+				});
+				if(option && typeof option === "object") {
+					myChart.setOption(option, true);
+				}
+			}
+			
+		</script>
+	</body>
+
+</html>

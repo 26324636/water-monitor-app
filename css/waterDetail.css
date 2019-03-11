@@ -1,0 +1,121 @@
+#nav {
+	background: url(../image/index_bac.jpg);
+	background-size: 100% 100%;
+}
+
+.mui-content {
+	/*display: flex;
+	justify-content: center;
+	flex-wrap: wrap;*/
+	padding-left: 5%;
+	float: left;
+}
+
+.areaList {
+	width: 45%;
+	height: 45%;
+	margin-top: 5%;
+	margin-right: 5%;
+	float: left;
+	
+	/*margin-top: 20px;*/
+}
+
+.area-name {
+	text-align: center;
+	font-size: 13px;
+	font-weight: bolder;
+	color: #595959;
+}
+
+.area-main {
+	height: 200px;
+	width: 100%;
+	/*background: url(../image/index_border.png);
+	background-size: 100% 100%;*/
+	border: 3px solid #fff;
+	color: #595959;
+	border-radius:10px ;
+	font-size: 13px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background: #fff;
+	opacity: 0.6;
+}
+.main-context{
+	width: 100%;
+	flex: 1;
+	height: 20%;
+	line-height: 40px;
+	text-align: center;
+}
+.main-temperature {
+	width: 100%;
+	flex: 1;
+	height: 20%;
+	display: flex;
+	line-height: 40px;
+	/*opacity: 1;*/
+}
+
+.temperature-text {
+	width: 55%;
+	text-align: right;
+}
+
+.temperature-num {
+	width: 45%;
+	text-align: left;
+}
+
+.main-phvalue {
+	width: 100%;
+	flex: 1;
+	display: flex;
+	line-height: 40px;
+}
+
+.phvalue-text {
+	width: 60%;
+	text-align: right;
+}
+
+.phvalue-num {
+	width: 40%;
+	text-align: left;
+}
+
+.main-oxygen {
+	width: 100%;
+	flex: 1;
+	display: flex;
+	line-height: 40px;
+}
+
+.oxygen-text {
+	width: 55%;
+	text-align: right;
+}
+
+.oxygen-num {
+	width: 45%;
+	text-align: left;
+}
+
+.main-turbidity {
+	width: 100%;
+	flex: 1;
+	display: flex;
+	line-height: 40px;
+}
+
+.turbidity-text {
+	width: 55%;
+	text-align: right;
+}
+
+.turbidity-num {
+	width: 45%;
+	text-align: left;
+}
